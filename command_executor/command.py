@@ -1,15 +1,17 @@
 import shlex
-from subprocess import PIPE, Popen
+import subprocess
 
 from .exceptions import CommandExecutionError, CommandParameterError
 
 
 class Command(object):
-    pid = None
+    process = None
     command = 'true'
     ignore_output = True
     fail_silently = False
     required_parameters = None
+    stdout = subprocess.PIPE
+    stderr = subprocess.PIPE
 
     def __init__(self, **kwargs):
         self.parameters = kwargs
@@ -18,7 +20,7 @@ class Command(object):
                 'Parameter(s) missing, required parameters: {0}'.format(
                     ', '.join(self.required_parameters)))
 
-    def execute(self, ignore_output=None, fail_silently=None, **kwargs):
+    def execute(self, ignore_output=None, fail_silently=None, stdin=None, **kwargs):
         command = self.get_command()
         ignore_output = ignore_output if ignore_output is not None else self.ignore_output
         fail_silently = fail_silently if fail_silently is not None else self.fail_silently
@@ -29,23 +31,21 @@ class Command(object):
         shell = kwargs.pop('shell', False)
 
         try:
-            process = Popen(
+            self.process = subprocess.Popen(
                 command,
                 shell=shell,
                 universal_newlines=True,
                 env=environ,
-                stdout=PIPE,
-                stderr=PIPE,
-                stdin=PIPE,
+                stdout=kwargs['stdout'] if 'stdout' in kwargs else self.stdout,
+                stderr=kwargs['stderr'] if 'stderr' in kwargs else self.stderr,
+                stdin=subprocess.PIPE,
             )
-            self.pid = process.pid
-
-            stdout, stderr = process.communicate()
+            stdout, stderr = self.process.communicate(input=stdin)
         except OSError as exc:
             raise CommandExecutionError(1, str(exc), self)
 
-        if not fail_silently and (stderr or process.returncode != 0):
-            raise CommandExecutionError(process.returncode, stderr, self)
+        if not fail_silently and (stderr or self.process.returncode != 0):
+            raise CommandExecutionError(self.process.returncode, stderr or '', self)
 
         return True if ignore_output else self.handle_output(stdout)
 
@@ -61,3 +61,7 @@ class Command(object):
 
     def handle_output(self, output):
         return output
+
+    @property
+    def pid(self):
+        return self.process.pid if self.process else None

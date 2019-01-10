@@ -75,3 +75,8 @@ class TestCommand:
     def test_failing_stderr_silent(self):
         cmd = StderrCommand(words='test 123')
         assert cmd.execute(fail_silently=True) is True
+
+    def test_pid(self):
+        cmd = RetValCommand(code=0)
+        assert cmd.execute() is True
+        assert cmd.pid == cmd.process.pid
