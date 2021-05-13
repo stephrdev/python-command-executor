@@ -18,7 +18,9 @@ class Command(object):
         if not self.validate_parameters():
             raise CommandParameterError(
                 'Parameter(s) missing, required parameters: {0}'.format(
-                    ', '.join(self.required_parameters)))
+                    ', '.join(self.required_parameters)
+                )
+            )
 
     def execute(self, ignore_output=None, fail_silently=None, stdin=None, **kwargs):
         command = self.get_command()
