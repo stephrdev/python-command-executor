@@ -45,9 +45,8 @@ class TestCommand:
 
         assert exc.value.code == 1
         assert exc.value.command == cmd
-        assert exc.value.stderr == (
-            "[Errno 2] No such file or directory: 'thiscommanddoesnotexist': "
-            "'thiscommanddoesnotexist'"
+        assert (
+            "[Errno 2] No such file or directory: 'thiscommanddoesnotexist'" in exc.value.stderr
         )
 
     def test_failing_return_value(self):

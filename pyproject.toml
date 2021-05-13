@@ -1,0 +1,64 @@
+[tool.poetry]
+name = "command-executor"
+version = "0.1.0"
+description = "command_executor provides some Python classes to make it easier to execute processes / commands and handling errors and output."
+authors = [
+	"Stephan Jaekel <steph@rdev.info>",
+]
+license = "MIT"
+readme = "README.rst"
+homepage = 'https://github.com/stephrdev/python-command-executor'
+repository = 'https://github.com/stephrdev/python-command-executor'
+classifiers = [
+	"Development Status :: 5 - Production/Stable",
+	"License :: OSI Approved :: MIT License",
+	"Intended Audience :: Developers",
+	"Operating System :: Unix",
+	"Programming Language :: Python",
+	"Programming Language :: Python :: 3",
+]
+packages = [{ include = "command_executor" }]
+include = ["LICENSE.rst"]
+
+[tool.poetry.dependencies]
+python = ">=3.6,<4"
+importlib-metadata = {version = "*", python = "<3.8"}
+
+Sphinx = {version = ">=3.5", optional = true}
+
+[tool.poetry.dev-dependencies]
+pytest = ">=6.2"
+pytest-cov = ">=2.11"
+pytest-flake8 = ">=1.0"
+pytest-isort = ">=2.0"
+pytest-black = ">=0.3"
+coverage = {version = ">=5.5", extras = ["toml"]}
+
+[tool.poetry.extras]
+docs = ["Sphinx"]
+
+[build-system]
+requires = ["poetry>=1.1"]
+build-backend = "poetry.masonry.api"
+
+[tool.pytest.ini_options]
+addopts = "-v --tb=short"
+testpaths = ["command_executor", "tests"]
+flake8-max-line-length = 96
+flake8-ignore = ["E203", "E266", "E501", "W503"]
+flake8-max-complexity = 18
+
+[tool.black]
+line-length = 96
+skip-string-normalization = true
+skip-numeric-underscore-normalization = true
+include = "\\.pyi?$"
+exclude = "/(\\.git|\\.tox|build|dist)/"
+
+[tool.coverage.run]
+branch = true
+source = ["command_executor"]
+omit = ["*/__init__.py"]
+
+[tool.coverage.report]
+exclude_lines = ["raise NotImplementedError"]

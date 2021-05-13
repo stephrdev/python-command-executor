@@ -1,5 +1,10 @@
-from .command import Command  # noqa
-from .exceptions import CommandError, CommandExecutionError, CommandParameterError  # noqa
+try:
+    import importlib.metadata as importlib_metadata
+except ModuleNotFoundError:
+    # This is required for Python versions < 3.8
+    import importlib_metadata
 
-
-__version__ = '0.1.0'
+try:
+    __version__ = importlib_metadata.version('command-executor')
+except Exception:
+    __version__ = 'HEAD'
