@@ -21,8 +21,7 @@ packages = [{ include = "command_executor" }]
 include = ["LICENSE.rst"]
 
 [tool.poetry.dependencies]
-python = ">=3.6,<4"
-importlib-metadata = {version = "*", python = "<3.8"}
+python = ">=3.8,<4"
 
 Sphinx = {version = ">=3.5", optional = true}
 
